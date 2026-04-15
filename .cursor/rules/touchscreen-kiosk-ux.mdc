@@ -1,0 +1,66 @@
+---
+description: Touch-first kiosk UX for wall or fridge-mounted displays; keyboard-optional primary flows
+alwaysApply: true
+---
+
+# Touchscreen-first / kiosk UX (Chore Wheel)
+
+Chore Wheel is used on a **wall- or fridge-mounted touch display**. Assume **no keyboard** for day-to-day use. Keyboard, precise pointing, and dense layouts are acceptable **only on setup/admin surfaces**, and those surfaces should still remain touch-usable.
+
+## Touch targets and layout
+
+- Aim for **at least ~44×44 CSS px** per interactive control (including icon-only buttons). Add padding to small visuals so the hit area meets this, not just the glyph.
+- Leave **clear space between** tappable controls to reduce mis-taps. Avoid tight clusters on primary flows.
+- Prefer **large, full-width, or pill-shaped** actions on the main wheel / chore flow.
+
+## Hover, state, and feedback
+
+- Do **not** rely on `:hover` for essential labels, actions, or state. Use always-visible text/icons; use hover as enhancement only.
+- Provide obvious **active/pressed** feedback for touch (`active:` in Tailwind, or equivalent). Loading/disabled states must be visible without hovering.
+
+## Typography and content
+
+- **Body text** on primary screens: **at least 16px**. Scale headings and CTAs for **arm’s-length** reading.
+- Keep the main wheel screen **scannable**; avoid long paragraphs there.
+
+## Scrolling and gestures
+
+- Use **clear scroll regions** when content overflows; avoid layouts where users cannot tell what scrolls.
+- Avoid accidental horizontal drift on vertically scrolled lists unless horizontal swipe is intentional—if you add swipe gestures, document them in code/comments.
+
+## Tailwind / CSS patterns
+
+- Encode minimum size with **`min-h-*` / `min-w-*`** plus padding on the interactive wrapper, not only on inner text.
+- On buttons and primary links, prefer **`touch-manipulation`** (e.g. Tailwind `touch-manipulation`) where double-tap zoom causes jank on kiosk browsers.
+
+### Example (hit area)
+
+```tsx
+// BAD — icon may look big but tap target is too small
+<button type="button" className="p-0">
+  <Icon className="size-5" />
+</button>
+
+// GOOD — minimum touch target with comfortable padding
+<button
+  type="button"
+  className="inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-full p-3 active:opacity-80"
+  aria-label="Spin wheel"
+>
+  <Icon className="size-6" />
+</button>
+```
+
+## Keyboard and shortcuts
+
+- **Core chore/wheel actions** must not require keyboard shortcuts, precise Tab order, or mouse-only interactions.
+- Shortcuts on **admin** routes are fine if documented; when focus is possible, keep **visible focus** styles for accessibility.
+
+## Forms (setup / admin)
+
+- Use **large inputs**, appropriate **`type`** / **`inputMode`**, and tap-friendly controls (native pickers where suitable).
+- Avoid **dense tables** on touch-first paths; if tables are admin-only, keep rows/cells touch-friendly.
+
+## Viewport and zoom
+
+- **Pinch-zoom off** can stabilize kiosk UIs but **reduces accessibility**—if you constrain scaling, document the choice in code/comments and prefer touch-friendly sizing instead of relying on zoom.
